@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to the Twine Zone</title>
+<!-- Google Fonts for arcade style -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ================= BODY & BACKGROUND ================= */
+body {
+  font-family: 'VT323', monospace;
+  margin: 0;
+  padding: 20px;
+  background: radial-gradient(circle at center, #0d0d0d 0%, #050505 100%);
+  overflow-x: hidden;
+  color: #fff;
+}
+
+/* Starfield animation */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 200%; height: 200%;
+  background: transparent url('https://i.ibb.co/5j9z0yD/stars.png') repeat;
+  background-size: cover;
+  animation: moveStars 200s linear infinite;
+  z-index: -1;
+}
+@keyframes moveStars { from { transform: translate(0,0);} to { transform: translate(-50%, -50%);} }
+
+/* CONTAINER */
+.container { max-width: 1200px; margin: auto; }
+
+/* HEADERS */
+h1 {
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  font-size: 2.5em;
+  color: #00ffff;
+  text-shadow: 0 0 8px #00ffff, 0 0 12px #ff00ff;
+}
+p.subtitle {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+
+/* ACCOUNT PANEL */
+#accountPanel { text-align: center; margin-bottom: 20px; }
+#accountPanel input { padding: 8px; margin: 0 5px 5px 0; border-radius: 8px; border: 1px solid #555; background: #111; color: #0ff; }
+#accountPanel button { padding: 8px 12px; border-radius: 8px; border: none; background: #ff00ff; color: #fff; cursor: pointer; font-weight: bold; margin-right: 5px; transition: 0.2s; }
+#accountPanel button:hover { background: #ff66ff; }
+
+/* FORM */
+form { background: #111111cc; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 0 10px #00ffff; }
+input, textarea, button { display: block; width: 100%; margin-top: 8px; margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #555; background: #111; color: #0ff; font-family: 'VT323', monospace; font-size: 1em; }
+button { background: #ff00ff; color: #fff; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; }
+button:hover { background: #ff66ff; transform: scale(1.05); }
+
+#searchBox { margin-bottom: 20px; padding: 10px; border-radius: 8px; border: 1px solid #555; font-size: 1em; width: 100%; background: #111; color: #0ff; }
+
+.counter { text-align: right; font-weight: bold; margin-bottom: 10px; }
+
+/* ARCADE GRID */
+#gameList { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+.game-card {
+  background: #111111cc; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; transition: 0.3s;
+  display: flex; flex-direction: column; cursor: pointer;
+}
+.game-card:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff; }
+.game-card img { width: 100%; height: 140px; object-fit: cover; border-bottom: 2px solid #00ffff; }
+.game-info { padding: 8px; text-align: center; }
+.game-info strong { display: block; margin-bottom: 4px; font-family: 'Press Start 2P', cursive; color: #ff0; text-shadow: 0 0 6px #ff0, 0 0 12px #f0f; }
+.game-info p { font-size: 0.8em; color: #0ff; height: 36px; overflow: hidden; }
+.game-info .tags { margin-top: 4px; }
+.game-info .tags span { background: #00ffff; color: #111; padding: 2px 6px; border-radius: 6px; margin: 2px; font-size: 10px; font-weight: bold; }
+.game-links { margin-top: 6px; }
+.game-links a, .game-links button { margin: 0 5px; font-weight: bold; color: #ff0; text-decoration: none; font-size: 0.85em; background: none; border: none; cursor: pointer; }
+.game-links a:hover, .game-links button:hover { color: #ff0; text-shadow: 0 0 6px #ff0; }
+
+/* CONFETTI */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: #ff0;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+@keyframes fall { 0% { transform: translateY(0); } 100% { transform: translateY(100vh); opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Welcome to the Twine Zone</h1>
+  <p class="subtitle">Submit your Twine adventures and explore stories like a true arcade hero!</p>
+
+  <!-- ACCOUNT PANEL -->
+  <div id="accountPanel">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="signupBtn">Sign Up</button>
+    <button id="loginBtn">Log In</button>
+    <span id="welcomeMsg"></span>
+    <button id="logoutBtn" style="display:none;">Log Out</button>
+  </div>
+
+  <!-- SUBMIT GAME FORM -->
+  <form id="submitForm">
+    <label>📝 Game Title</label>
+    <input type="text" id="title" required placeholder="Your game’s awesome title">
+
+    <label>👤 Author</label>
+    <input type="text" id="author" placeholder="Your name or handle (optional)">
+
+    <label>🖋️ Description</label>
+    <textarea id="description" placeholder="Short description of your game"></textarea>
+
+    <label>🏷️ Tags (comma separated)</label>
+    <input type="text" id="tags" placeholder="e.g. horror, puzzle, short">
+
+    <label>📂 Twine .html File</label>
+    <input type="file" id="file" accept=".html,.htm" required>
+
+    <label>🖼️ Thumbnail (optional)</label>
+    <input type="file" id="thumbnail" accept="image/*">
+
+    <button type="submit">Submit My Game!</button>
+  </form>
+
+  <input type="text" id="searchBox" placeholder="🔍 Search by title or tag...">
+  <div class="counter" id="gameCounter"></div>
+
+  <h2>🕹️ Arcade Shelf</h2>
+  <div id="gameList"></div>
+</div>
+
+<script>
+// ================= DATABASE =================
+let db;
+let currentUser = null;
+const request = indexedDB.open("TwineZoneDB", 6);
+request.onerror = () => console.error("Database failed to open");
+request.onsuccess = (e) => { db = e.target.result; loadGames(); };
+request.onupgradeneeded = (e) => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("games")) db.createObjectStore("games", { keyPath: "id", autoIncrement:true });
+  if (!db.objectStoreNames.contains("users")) db.createObjectStore("users", { keyPath: "username" });
+};
+
+// ================= ACCOUNT =================
+function hashPassword(str) { return btoa(str); }
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const welcomeMsg = document.getElementById("welcomeMsg");
+
+signupBtn.addEventListener("click", () => {
+  const username = document.getElementById("username").value.trim();
+  const password = hashPassword(document.getElementById("password").value.trim());
+  if (!username || !password) return alert("Enter username and password");
+  const tx = db.transaction(["users"], "readwrite");
+  const store = tx.objectStore("users");
+  store.get(username).onsuccess = e => {
+    if (e.target.result) return alert("Username taken!");
+    store.add({ username, password });
+    alert("Account created! You can now log in.");
+  };
+});
+
+loginBtn.addEventListener("click", () => {
+  const username = document.getElementById("username").value.trim();
+  const password = hashPassword(document.getElementById("password").value.trim());
+  if (!username || !password) return;
+  const tx = db.transaction(["users"], "readonly");
+  const store = tx.objectStore("users");
+  store.get(username).onsuccess = e => {
+    const user = e.target.result;
+    if (!user || user.password !== password) return alert("Invalid login!");
+    currentUser = username;
+    welcomeMsg.textContent = "Welcome, " + currentUser;
+    logoutBtn.style.display = "inline";
+  };
+});
+
+logoutBtn.addEventListener("click", () => {
+  currentUser = null;
+  welcomeMsg.textContent = "";
+  logoutBtn.style.display = "none";
+});
+
+// ================= GAME LOGIC =================
+const form = document.getElementById("submitForm");
+const gameList = document.getElementById("gameList");
+const searchBox = document.getElementById("searchBox");
+const gameCounter = document.getElementById("gameCounter");
+
+function saveGame(game) { const tx = db.transaction(["games"], "readwrite"); tx.objectStore("games").add(game); }
+function loadGames() {
+  gameList.innerHTML = "";
+  const tx = db.transaction(["games"], "readonly");
+  const store = tx.objectStore("games");
+  const request = store.openCursor(null,"prev");
+  const allGames = [];
+  request.onsuccess = e => {
+    const cursor = e.target.result;
+    if(cursor){ allGames.push(cursor.value); cursor.continue(); }
+    else{ window.games = allGames; displayGames(allGames); }
+  };
+}
+function displayGames(arr) { gameList.innerHTML=""; arr.forEach(createGameCard); gameCounter.textContent=`Total Games: ${arr.length}`; }
+function createGameCard(game){
+  const div = document.createElement("div"); div.className="game-card";
+  div.innerHTML=`<img src="${game.thumbnail||'https://via.placeholder.com/180x140?text=No+Thumbnail'}" alt="Thumbnail">
+  <div class="game-info">
+    <strong>${game.title}</strong>
+    <p>${game.description}</p>
+    <div class="tags">${(game.tags||[]).map(t=>`<span>${t}</span>`).join("")}</div>
+    <div class="game-links">
+      <a href="${game.url}" target="_blank">🎮 Play</a> |
+      <a href="${game.url}" download>💾 Download</a>
+    </div>
+  </div>`;
+  if(game.owner && currentUser===game.owner){
+    const delBtn=document.createElement("button"); delBtn.textContent="🗑️ Delete";
+    delBtn.onclick=()=>{ const tx=db.transaction(["games"],"readwrite"); tx.objectStore("games").delete(game.id).onsuccess=()=>loadGames(); };
+    div.querySelector(".game-links").appendChild(delBtn);
+  }
+  gameList.appendChild(div);
+}
+
+// CONFETTI EFFECT
+function spawnConfetti(){
+  for(let i=0;i<50;i++){
+    const c=document.createElement("div");
+    c.className="confetti"; c.style.left=Math.random()*100+"vw";
+    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.width=c.style.height=(5+Math.random()*5)+"px";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2000);
+  }
+}
+
+// SUBMIT FORM
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const title=document.getElementById("title").value.trim();
+  const author=document.getElementById("author").value.trim()||"Anonymous";
+  const description=document.getElementById("description").value.trim();
+  const tags=document.getElementById("tags").value.split(",").map(t=>t.trim()).filter(Boolean);
+  const file=document.getElementById("file").files[0];
+  const thumbFile=document.getElementById("thumbnail").files[0];
+  if(!file){ alert("Please select a Twine file."); return; }
+  if(!file.name.toLowerCase().endsWith(".html")&&!file.name.toLowerCase().endsWith(".htm")){ alert("Only .html Twine files allowed."); return; }
+  const fileURL=URL.createObjectURL(file);
+  let thumbnailURL=""; if(thumbFile) thumbnailURL=URL.createObjectURL(thumbFile);
+  const game={ title, author, description, tags, url:fileURL, thumbnail:thumbnailURL, owner:currentUser };
+  saveGame(game); window.games.unshift(game); displayGames(window.games); form.reset(); spawnConfetti();
+});
+
+// SEARCH
+searchBox.addEventListener("input",()=>{ const term=searchBox.value.toLowerCase(); const filtered=window.games.filter(g=> g.title.toLowerCase().includes(term)||(g.tags||[]).some(tag=>tag.toLowerCase().includes(term))); displayGames(filtered); });
+
+</script>
+</body>
+</html>
