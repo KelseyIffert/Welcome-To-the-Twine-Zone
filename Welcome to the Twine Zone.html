@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Twine Zone Guild Hall - A Chronicle</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=MedievalSharp&display=swap" rel="stylesheet">
+<style>
+/* ================= CSS VARIABLES ================= */
+:root {
+  --primary-color: #ffd700;    /* Gold/Brass for headers and titles */
+  --secondary-color: #8b4513;  /* Saddle Brown/Wood for accents and borders */
+  --text-color: #e0d0b0;      /* Aged Parchment/Light Tan for main text */
+  --title-font: 'MedievalSharp', cursive; /* More fantasy-focused title font */
+  --main-font: 'VT323', monospace;      /* For a text-log/terminal feel */
+  --background-dark: #2c2c2c;  /* Dark Stone/Dungeon Background */
+  --element-bg: #4b382d;       /* Dark Leather/Wood for elements */
+}
+
+/* ================= BODY & BACKGROUND ================= */
+body {
+  font-family: var(--main-font);
+  margin: 0;
+  padding: 30px;
+  /* Dark, slightly textured background for dungeon/stone look */
+  background: #1e1e1e url('https://i.ibb.co/hRYpQ69/stone-texture.png') repeat;
+  background-attachment: fixed;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Container */
+.container { max-width: 1000px; margin: auto; }
+
+/* HEADERS */
+h1 {
+  font-family: var(--title-font);
+  text-align: center;
+  font-size: 3em;
+  color: var(--primary-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 10px var(--primary-color);
+  margin-bottom: 5px;
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+h2 {
+    font-family: var(--title-font);
+    color: var(--primary-color);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    border-bottom: 1px solid var(--secondary-color);
+    padding-bottom: 5px;
+    margin-top: 40px;
+    font-size: 1.8em;
+}
+
+p.subtitle {
+  text-align: center;
+  color: #c0c0c0;
+  margin-bottom: 35px;
+  font-size: 1.1em;
+  font-family: var(--title-font);
+}
+
+/* ACCOUNT PANEL */
+#accountPanel { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    background: var(--element-bg);
+    padding: 15px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 6px;
+    box-shadow: inset 0 0 5px #000;
+}
+#accountPanel input { 
+    padding: 8px; margin: 0 5px 5px 0; border-radius: 4px; 
+    border: 1px solid #555; background: #333; color: var(--text-color); 
+    transition: 0.3s;
+}
+#accountPanel input:focus { 
+    outline: none; 
+    box-shadow: 0 0 5px var(--primary-color); 
+    border-color: var(--primary-color);
+}
+#accountPanel button { 
+    padding: 8px 12px; border-radius: 4px; border: none; 
+    background: #6a0d0d; 
+    color: var(--text-color); cursor: pointer; 
+    font-weight: bold; margin-right: 5px; transition: 0.2s; 
+    text-shadow: 1px 1px 2px #000;
+}
+#accountPanel button:hover { background: #993333; box-shadow: 0 0 8px #993333; }
+
+/* FORM (Quest Submission Log) */
+form { 
+    background: var(--element-bg); 
+    padding: 30px; border-radius: 8px; 
+    margin-bottom: 30px; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8); 
+    border: 3px double var(--primary-color); 
+}
+
+/* Input Fields */
+label { font-family: var(--title-font); color: var(--primary-color); display: block; margin-top: 15px; }
+input, textarea { /* Combined input selector */
+    display: block; width: 100%; margin-top: 5px; margin-bottom: 15px; 
+    padding: 10px; border-radius: 3px; 
+    border: 1px solid var(--secondary-color); 
+    background: #333333; 
+    color: var(--text-color); 
+    font-family: var(--main-font); font-size: 1em; 
+    box-shadow: inset 0 0 3px #000;
+}
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color), inset 0 0 3px var(--primary-color);
+}
+
+/* Submit Button (Guild Seal/Action Button) */
+button[type="submit"] { 
+    background: var(--primary-color); 
+    color: #333; font-weight: bold; 
+    border: none; cursor: pointer; transition: 0.2s; 
+    padding: 12px; border-radius: 4px; 
+    box-shadow: 0 4px 0 #ccaa00; 
+    font-family: var(--title-font);
+    font-size: 1.2em;
+}
+button[type="submit"]:hover { 
+    background: #ffec80; 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 0 #ccaa00, 0 0 15px #ffec80; 
+}
+button[type="submit"]:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #ccaa00;
+}
+
+/* Search Box (Log entry/Command Line) */
+#searchBox { 
+    margin-bottom: 20px; padding: 12px; border-radius: 4px; 
+    border: 1px solid var(--primary-color); font-size: 1.1em; width: 100%; 
+    background: #000000; color: #00ff00; 
+    box-shadow: 0 0 8px #00ff00; 
+}
+#searchBox::placeholder { color: #008800; }
+
+
+/* Game Counter (Tally) */
+.counter { 
+    text-align: right; font-weight: bold; margin-bottom: 15px; 
+    color: var(--primary-color); 
+    font-size: 1.1em; 
+    text-shadow: 0 0 5px #000;
+}
+
+/* ARCADE GRID -> QUEST BOARD */
+#gameList { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; } 
+.game-card {
+  background: #fdf5e6; 
+  border-radius: 10px; 
+  overflow: hidden;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5); 
+  border: 4px double var(--secondary-color); 
+  transition: 0.3s;
+  display: flex; flex-direction: column; cursor: pointer;
+}
+.game-card:hover { 
+    transform: translateY(-5px) scale(1.02); 
+    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.7); 
+}
+.game-card img { 
+    width: 100%; height: 160px; object-fit: cover; 
+    border-bottom: 2px solid var(--secondary-color); 
+}
+.game-info { 
+    padding: 15px; text-align: center; 
+    flex-grow: 1; 
+    display: flex; flex-direction: column;
+    color: #333; 
+}
+.game-info strong { 
+    display: block; margin-bottom: 4px; 
+    font-family: var(--title-font); 
+    color: #800000; 
+    text-shadow: 1px 1px 1px #fff; 
+    font-size: 1.2em;
+}
+.game-info p { 
+    font-size: 0.9em; 
+    color: #444; 
+    height: 40px; overflow: hidden; margin-bottom: 10px;
+    flex-grow: 1;
+}
+.game-info .tags { 
+    margin-top: auto; 
+    margin-bottom: 8px;
+}
+/* Tags as seals or crests */
+.game-info .tags span { 
+    background: #6a0d0d; 
+    color: var(--text-color); 
+    padding: 4px 8px; 
+    border-radius: 12px; 
+    margin: 2px; 
+    font-size: 0.7em; 
+    font-weight: bold; 
+    display: inline-block;
+    border: 1px solid var(--primary-color);
+}
+
+/* Game Links as Parchment Buttons */
+.game-links { margin-top: 10px; display: flex; justify-content: space-around; }
+.game-links a, .game-links button { 
+    flex-basis: 45%; 
+    text-decoration: none; font-size: 0.9em; 
+    padding: 8px; border-radius: 4px; 
+    font-weight: bold; transition: 0.2s;
+    text-align: center;
+    border: none; cursor: pointer;
+    font-family: var(--title-font);
+    color: var(--text-color);
+}
+
+/* Play Button (Gold/Action) */
+.game-links a[target="_blank"] { 
+    background: var(--primary-color); 
+    color: #333; 
+    box-shadow: 0 3px 0 #ccaa00;
+}
+.game-links a[target="_blank"]:hover { 
+    background: #ffec80; 
+    box-shadow: 0 0 10px var(--primary-color), 0 3px 0 #ccaa00;
+    transform: translateY(-1px);
+}
+
+/* Download Button (Copper/Secondary Action) */
+.game-links a[download] { 
+    background: #b87333; 
+    color: #fff; 
+    box-shadow: 0 3px 0 #8d5e2f;
+}
+.game-links a[download]:hover { 
+    background: #c3864d; 
+    box-shadow: 0 0 10px #c3864d, 0 3px 0 #8d5e2f;
+    transform: translateY(-1px);
+}
+
+/* Delete Button (Dark Red/Warning) */
+.game-links button { 
+    background: #6a0d0d; 
+    color: #fff; 
+    box-shadow: 0 3px 0 #4d0909;
+}
+.game-links button:hover { 
+    background: #993333; 
+    box-shadow: 0 0 10px #993333, 0 3px 0 #4d0909;
+    transform: translateY(-1px);
+}
+
+/* CONFETTI -> EPIC LOOT DROP */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: var(--primary-color);
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+@keyframes fall { 0% { transform: translateY(0); } 100% { transform: translateY(100vh); opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>The Guild Hall: Twine Chronicles</h1>
+  <p class="subtitle">Log your quests, submit your tales, and seek fame among the adventurers. (GitHub Ready)</p>
+
+  <div id="accountPanel">
+    <input type="text" id="username" placeholder="🔑 Adventurer Name">
+    <input type="password" id="password" placeholder="🔒 Secret Rune">
+    <button id="signupBtn">JOIN GUILD</button>
+    <button id="loginBtn">ENTER HALL</button>
+    <span id="welcomeMsg"></span>
+    <button id="logoutBtn" style="display:none;">LEAVE HALL</button>
+  </div>
+
+  <form id="submitForm">
+    <label>📜 Quest Title</label>
+    <input type="text" id="title" required placeholder="The Legend of the Missing Plot Device">
+
+    <label>👤 Chronicler</label>
+    <input type="text" id="author" placeholder="Your Guild Rank or Alias">
+
+    <label>✍️ Quest Summary</label>
+    <textarea id="description" placeholder="A brief scroll detailing the peril and reward (max 200 chars)" maxlength="200"></textarea>
+
+    <label>🏷️ Keywords (comma separated)</label>
+    <input type="text" id="tags" placeholder="e.g. D&D, High-Fantasy, Puzzle, Short-Trial">
+
+    <label>🔗 Direct Play URL (REQUIRED)</label>
+    <input type="url" id="gameURL" required placeholder="e.g. https://yourusername.itch.io/gamename or https://pages.github.io/gamename.html">
+
+    <label>🖼️ Guild Sigil/Cover Art URL (optional)</label>
+    <input type="url" id="thumbnailURL" placeholder="Direct link to cover image (e.g. .jpg or .png)">
+
+    <button type="submit">COMMIT QUEST TO CHRONICLES</button>
+  </form>
+
+  <input type="text" id="searchBox" placeholder="🔍 SEARCH LOGS: Enter quest title or keyword...">
+  <div class="counter" id="gameCounter"></div>
+
+  <h2>📜 CURRENT QUEST BOARD</h2>
+  <div id="gameList"></div>
+</div>
+
+<script>
+// ================= DATABASE =================
+let db;
+let currentUser = null;
+// Version bump is unnecessary but won't hurt
+const request = indexedDB.open("TwineZoneDB", 7); 
+request.onerror = () => console.error("Database failed to open");
+request.onsuccess = (e) => { db = e.target.result; loadGames(); };
+request.onupgradeneeded = (e) => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("games")) db.createObjectStore("games", { keyPath: "id", autoIncrement:true });
+  if (!db.objectStoreNames.contains("users")) db.createObjectStore("users", { keyPath: "username" });
+};
+
+// ================= ACCOUNT (Logic Unchanged) =================
+function hashPassword(str) { return btoa(str); }
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const welcomeMsg = document.getElementById("welcomeMsg");
+
+signupBtn.addEventListener("click", () => {
+  const username = document.getElementById("username").value.trim();
+  const password = hashPassword(document.getElementById("password").value.trim());
+  if (!username || !password) return alert("Enter adventurer name and secret rune.");
+  const tx = db.transaction(["users"], "readwrite");
+  const store = tx.objectStore("users");
+  store.get(username).onsuccess = e => {
+    if (e.target.result) return alert("That name is already claimed by a veteran adventurer!");
+    store.add({ username, password });
+    alert("Account created! You may now enter the Guild Hall.");
+  };
+});
+
+loginBtn.addEventListener("click", () => {
+  const username = document.getElementById("username").value.trim();
+  const password = hashPassword(document.getElementById("password").value.trim());
+  if (!username || !password) return;
+  const tx = db.transaction(["users"], "readonly");
+  const store = tx.objectStore("users");
+  store.get(username).onsuccess = e => {
+    const user = e.target.result;
+    if (!user || user.password !== password) return alert("Invalid credentials! Perhaps a forgotten prophecy?");
+    currentUser = username;
+    welcomeMsg.textContent = "Welcome, Chronicler " + currentUser;
+    logoutBtn.style.display = "inline";
+    document.getElementById("username").value = '';
+    document.getElementById("password").value = '';
+    loadGames(); 
+  };
+});
+
+logoutBtn.addEventListener("click", () => {
+  currentUser = null;
+  welcomeMsg.textContent = "";
+  logoutBtn.style.display = "none";
+  loadGames(); 
+});
+
+// ================= GAME LOGIC (Logic Unchanged) =================
+const form = document.getElementById("submitForm");
+const gameList = document.getElementById("gameList");
+const searchBox = document.getElementById("searchBox");
+const gameCounter = document.getElementById("gameCounter");
+
+function saveGame(game) { const tx = db.transaction(["games"], "readwrite"); tx.objectStore("games").add(game); }
+function loadGames() {
+  gameList.innerHTML = "";
+  const tx = db.transaction(["games"], "readonly");
+  const store = tx.objectStore("games");
+  const request = store.openCursor(null,"prev"); 
+  const allGames = [];
+  request.onsuccess = e => {
+    const cursor = e.target.result;
+    if(cursor){ allGames.push(cursor.value); cursor.continue(); }
+    else{ window.games = allGames; displayGames(allGames); }
+  };
+}
+
+function displayGames(arr) { 
+    gameList.innerHTML=""; 
+    arr.forEach(createGameCard); 
+    gameCounter.textContent=`[ TOTAL QUESTS LOGGED: ${arr.length} ]`; 
+}
+
+function createGameCard(game){
+  const div = document.createElement("div"); div.className="game-card";
+  
+  // NOTE: Download link now points to the same URL, expecting the user might host the downloadable file there too.
+  const linksHtml = `<a href="${game.url}" target="_blank">⚔️ BEGIN QUEST</a> 
+                     <a href="${game.url}" download>📜 COPY SCROLL</a>`;
+  
+  // Default placeholder image for missing thumbnail
+  const placeholder = 'https://via.placeholder.com/240x160?text=GUILD+SIGIL+MISSING';
+
+  div.innerHTML=`<img src="${game.thumbnail||placeholder}" alt="Thumbnail">
+  <div class="game-info">
+    <strong>${game.title}</strong>
+    <p>${game.description}</p>
+    <div class="tags">${(game.tags||[]).map(t=>`<span>${t.toUpperCase()}</span>`).join("")}</div>
+    <div class="game-links">
+      ${linksHtml}
+    </div>
+  </div>`;
+  
+  const gameLinksDiv = div.querySelector(".game-links");
+  const isOwner = game.owner && currentUser === game.owner;
+  
+  if(isOwner){
+    const delBtn=document.createElement("button"); delBtn.textContent="💀 ABANDON QUEST";
+    delBtn.onclick=()=>{ 
+        if(confirm(`Are you sure you wish to ABANDON and destroy the chronicle: "${game.title}"? This cannot be undone!`)){
+             const tx=db.transaction(["games"],"readwrite"); 
+             tx.objectStore("games").delete(game.id).onsuccess=()=>loadGames(); 
+        }
+    };
+    gameLinksDiv.appendChild(delBtn);
+    gameLinksDiv.style.justifyContent = 'space-between';
+    div.querySelector('a[download]').style.flexBasis = '30%';
+    div.querySelector('a[target="_blank"]').style.flexBasis = '30%';
+    delBtn.style.flexBasis = '30%';
+  }
+  
+  gameList.appendChild(div);
+}
+
+// CONFETTI EFFECT (Unchanged)
+function spawnConfetti(){
+    const colors = ['#ffd700', '#b87333', '#6a0d0d']; 
+    for(let i=0;i<50;i++){
+        const c=document.createElement("div");
+        c.className="confetti"; c.style.left=Math.random()*100+"vw";
+        c.style.backgroundColor=colors[Math.floor(Math.random() * colors.length)]; 
+        c.style.width=c.style.height=(5+Math.random()*5)+"px";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),2000);
+    }
+}
+
+// SUBMIT FORM (UPDATED for URL inputs)
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  if (!currentUser) { alert("You must be logged in to submit a quest to the chronicles!"); return; } 
+  
+  const title=document.getElementById("title").value.trim();
+  const author=document.getElementById("author").value.trim()||currentUser; 
+  const description=document.getElementById("description").value.trim();
+  const tags=document.getElementById("tags").value.split(",").map(t=>t.trim()).filter(Boolean);
+  const gameURL=document.getElementById("gameURL").value.trim();
+  const thumbnailURL=document.getElementById("thumbnailURL").value.trim();
+  
+  const game={ title, author, description, tags, url:gameURL, thumbnail:thumbnailURL, owner:currentUser };
+  
+  saveGame(game); 
+  window.games.unshift(game); 
+  displayGames(window.games); 
+  form.reset(); 
+  spawnConfetti();
+  alert("Quest successfully logged! NOTE: The game is played/downloaded from the provided URL.");
+});
+
+// SEARCH (Unchanged)
+searchBox.addEventListener("input",()=>{ 
+    const term=searchBox.value.toLowerCase(); 
+    const filtered=window.games.filter(g=> 
+        g.title.toLowerCase().includes(term)||
+        g.author.toLowerCase().includes(term)|| 
+        (g.tags||[]).some(tag=>tag.toLowerCase().includes(term))
+    ); 
+    displayGames(filtered); 
+});
+
+// Initial load of account state on page load (simple check)
+if (currentUser) {
+    welcomeMsg.textContent = "Welcome, Chronicler " + currentUser;
+    logoutBtn.style.display = "inline";
+}
+
+</script>
+</body>
+</html>
